@@ -1,0 +1,6 @@
+# Mac file
+.DS_Store
+
+.idea/
+
+out/
