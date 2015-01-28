@@ -1,6 +1,8 @@
 package Java.src.CC150;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Stack;
 
 /**
@@ -102,5 +104,99 @@ public class StacksAndQueues {
         }
 
     }
+
+    public class MyQueue<T> {
+        Stack<T> stackNew, stackOld;
+
+        public MyQueue(){
+            stackNew = new Stack<T>();
+            stackOld = new Stack<T>();
+        }
+
+        public int size(){
+            return stackNew.size() + stackOld.size();
+        }
+
+        public void add(T value){
+            stackNew.push(value);
+        }
+
+        private void shiftStacks(){
+            if(stackOld.isEmpty()){
+                while(!stackNew.isEmpty()){
+                    stackOld.push(stackNew.pop());
+                }
+            }
+        }
+
+        public T peek(){
+            shiftStacks();
+            return stackOld.peek();
+        }
+
+        public T remove(){
+            shiftStacks();
+            return  stackOld.pop();
+        }
+    }
+
+    public Stack<Integer> sortStack(Stack<Integer> s){
+        Stack<Integer> sorted = new Stack();
+
+
+        while(!s.isEmpty()){
+            int temp = s.pop();
+            if(!sorted.isEmpty() && sorted.peek() > temp){
+                s.push(sorted.pop());
+            }
+            sorted.push(temp);
+        }
+
+        return sorted;
+    }
+
+    public abstract class Animal{
+        String name;
+        public Animal(String name){ this.name = name;}
+        public String getName(){return name;}
+    }
+    public class Dog extends Animal{
+        public Dog(String name){ super(name);}
+    }
+    public class Cat extends Animal{
+        public Cat(String name){ super(name);}
+    }
+    public class AnimalQueue{
+        LinkedList<Animal> animals = new LinkedList<Animal>();
+        public void enqueue(Animal a){
+            animals.offer(a);
+        }
+
+        public Animal dequeueAny(){
+            return animals.poll();
+        }
+
+        public Animal dequeueDog(){
+            int i = 0;
+            while(!(animals.get(i) instanceof Dog)){
+                i++;
+            }
+            Animal result = animals.get(i);
+            animals.remove(i);
+            return result;
+
+        }
+        public Animal dequeueCat(){
+            int i = 0;
+            while(!(animals.get(i) instanceof Cat)){
+                i++;
+            }
+            Animal result = animals.get(i);
+            animals.remove(i);
+            return result;
+        }
+    }
+
+
 
 }

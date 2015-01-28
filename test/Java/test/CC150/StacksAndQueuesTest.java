@@ -1,6 +1,5 @@
 package Java.test.CC150;
 
-import Java.src.CC150.LinkedLists;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import Java.src.CC150.StacksAndQueues;
@@ -50,4 +49,38 @@ public class StacksAndQueuesTest {
         stack.popAt(4);
         assertEquals(3, stack.getSize());
     }
+
+    @Test
+    public void MyQueueTest(){
+        MyQueue queue = Test.new MyQueue();
+        queue.add(1);
+        queue.add(2);
+        queue.add(3);
+        assertEquals(1, queue.peek());
+    }
+
+    @Test
+    public void sortStackTest(){
+        Stack<Integer> s = new Stack<Integer>();
+        s.push(1);
+        s.push(3);
+        s.push(8);
+        s.push(6);
+        s.push(5);
+        s = Test.sortStack(s);
+        assertFalse(5 == s.peek());
+    }
+
+    @Test
+    public void AnimalTest(){
+        AnimalQueue queue = Test.new AnimalQueue();
+        queue.enqueue(Test.new Dog("samoyed"));
+        queue.enqueue(Test.new Dog("husky"));
+        queue.enqueue(Test.new Cat("金吉拉"));
+        queue.enqueue(Test.new Cat("美短"));
+        queue.enqueue(Test.new Dog("golden"));
+        assertEquals("samoyed", queue.dequeueAny().getName());
+        assertEquals("金吉拉", queue.dequeueCat().getName());
+    }
+
 }
