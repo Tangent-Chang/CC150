@@ -15,7 +15,7 @@ public class TreeAndGraph {
         public Node root;
 
         public class Node {
-            public Node left, right;
+            public Node left, right, parent;
             public int value;
 
             public Node(int value) {
@@ -71,27 +71,28 @@ public class TreeAndGraph {
         }
 
         public Node createBinarySearchTree(int[] array){
-            return createBinarySearchTree(array, 0, array.length-1);
+            return createBinarySearchTree(array, 0, array.length-1, null);
         }
-        public Node createBinarySearchTree(int[] array, int start, int end){
+        public Node createBinarySearchTree(int[] array, int start, int end, Node parent){
             if(end<start) return null;
 
             int middle = Math.round((start + end)/2);
             Node current = new Node(array[middle]);
-            current.left = createBinarySearchTree(array, start, middle - 1);
-            current.right = createBinarySearchTree(array, middle+1, end);
+            current.parent = parent;
+            current.left = createBinarySearchTree(array, start, middle - 1, current);
+            current.right = createBinarySearchTree(array, middle+1, end, current);
 
             return current;
         }
 
-        public ArrayList<LinkedList> sameDepthLists(MyTree tree){
-            ArrayList<LinkedList> array = new ArrayList<LinkedList>();
+        public ArrayList<LinkedList<Node>> sameDepthLists(MyTree tree){
+            ArrayList<LinkedList<Node>> array = new ArrayList<LinkedList<Node>>();
             int depth = 1;
             array = createLists(tree.root, array, depth);
             return array;
         }
-        public ArrayList<LinkedList> createLists(Node x, ArrayList<LinkedList> arr, int depth){
-            if(arr.size()<depth)arr.add(depth-1, new LinkedList<Node>());
+        public ArrayList<LinkedList<Node>> createLists(Node x, ArrayList<LinkedList<Node>> arr, int depth){
+            if(arr.size()<depth)arr.add(new LinkedList<Node>());
 
             arr.get(depth-1).add(x);
 
@@ -101,6 +102,91 @@ public class TreeAndGraph {
             return arr;
         }
 
+        public boolean checkBST(Node n){
+            return checkBST(n, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        }
+        public boolean checkBST(Node n, int min, int max){
+            if(n==null) return true;
+            if(n.value <= min || n.value > max) return false;
+            if(!checkBST(n.left, min, n.value) || !checkBST(n.right, n.value, max)) return false;
+            return true;
+        }
+
+        public Node findNext(Node x){
+            if(x == null) return null;
+            if(x.right !=null){ return leftMostChild(x.right);}
+            else{
+                Node t = x;
+                Node p = x.parent;
+                while(p != null && p.left !=t){
+                    t = p;
+                    p = p.parent;
+                }
+                return p;
+            }
+        }
+        public Node leftMostChild(Node n){
+            if(n==null) return null;
+            while(n.left!= null){
+                n = n.left;
+            }
+            return n;
+        }
+
+        public boolean containTree(Node t1, Node t2){
+            if(t2 == null) return true;
+            return subTree(t1, t2);
+        }
+        boolean subTree(Node r1, Node r2){
+            if(r1 == null) return false;
+            if(r1.value == r2.value){
+                if(matchTree(r1, r2)) return true;
+            }
+            return (subTree(r1.left, r2) || subTree(r1.right, r2));
+        }
+        boolean matchTree(Node r1, Node r2){
+            if(r2 == null && r1 == null) return true;
+            if(r1 == null || r2 == null) return false;
+            if(r1.value != r2.value) return false;
+            return (matchTree(r1.left, r2.left) && matchTree(r1.right, r2.right));
+        }
+
+        public void findSum(Node node, int sum, int[] path, int level){
+            if(node == null) return;
+
+            path[level] = node.value;
+
+            int t = 0;
+            for(int i = level; i >= 0; i--){
+                t = t + path[i];
+                if(t == sum){
+                    print(path, i, level);
+                }
+            }
+
+            findSum(node.left, sum, path, level+1);
+            findSum(node.right, sum, path, level+1);
+
+            path[level] = Integer.MIN_VALUE;
+        }
+        public void findSum(Node node, int sum){
+            int depth = depth(node);
+            int[] path = new int[depth];
+            findSum(node, sum, path, 0);
+        }
+        public int depth(Node node){
+            if(node == null){
+                return 0;
+            }
+            else{
+                return 1 + Math.max(depth(node.left), depth(node.right));
+            }
+
+        }
+        public void print(int[] path, int start, int end){
+            for(int i = start; i <=end; i ++) System.out.print(path[i] + " ");
+            System.out.println();
+        }
     }
 
     public class GNode{
